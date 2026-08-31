@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Masjid Display — Azkar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="pattern"></div><div class="ambient a1"></div><div class="ambient a2"></div>
+<header class="topbar">
+  <div class="mosque-brand"><div class="mosque-icon">☪</div><div><div id="mosqueName">MASJID AL-IKHLAS</div><small id="mosqueLocation">Palembang, Sumatera Selatan</small></div></div>
+  <div class="top-actions"><span class="live-dot">● LIVE</span><button id="fullscreenBtn">⛶</button><button id="settingsBtn">⚙</button></div>
+</header>
+
+<main class="dashboard">
+<section class="hero-card">
+  <div class="mode-label">JAM DISPLAY</div><div class="date-line" id="dateText"></div>
+  <div class="clock" id="clock">00:00<span>:00</span></div>
+  <div class="next-prayer"><div><small>MENUJU</small><strong id="nextPrayerName">SUBUH</strong></div><div class="countdown" id="countdown">00:00:00</div></div>
+</section>
+
+<aside class="side-panel">
+ <div class="panel-heading"><span>JADWAL SHOLAT</span><span>HARI INI</span></div>
+ <div id="prayerList" class="prayer-list"></div>
+</aside>
+
+<section class="azkar-card">
+ <div class="azkar-head"><div><div class="mode-label">DAILY AZKAR</div><h2 id="azkarTitle">Dzikir Pagi</h2></div><div class="azkar-progress"><span id="azkarIndex">1</span> / <span id="azkarTotal">5</span></div></div>
+ <div class="azkar-arabic" id="azkarArabic"></div>
+ <div class="azkar-meaning" id="azkarMeaning"></div>
+ <div class="azkar-controls"><button id="prevAzkar">← Sebelumnya</button><button id="nextAzkar">Berikutnya →</button></div>
+</section>
+
+<section class="info-row">
+ <div class="info-card"><span class="info-icon">☀</span><div><small>SUHU</small><strong id="temperature">28°C</strong></div></div>
+ <div class="info-card"><span class="info-icon">⌖</span><div><small>LOKASI</small><strong id="locationShort">Palembang</strong></div></div>
+ <div class="info-card announcement"><span class="info-icon">✦</span><div><small>INFORMASI</small><strong>Mohon menonaktifkan suara ponsel selama berada di dalam masjid.</strong></div></div>
+</section>
+</main>
+<footer><div class="ticker"><span>✦</span> SELAMAT DATANG DI MASJID AL-IKHLAS • MARI JAGA KEBERSIHAN DAN KETENANGAN MASJID • LURUSKAN DAN RAPATKAN SHAF</div></footer>
+
+<div id="settingsModal" class="modal hidden"><div class="modal-backdrop"></div><div class="settings-card">
+<button id="closeSettings" class="close">×</button><div class="mode-label">DISPLAY SETTINGS</div><h2>Pengaturan Display</h2>
+<label>Nama Masjid<input id="setName" value="MASJID AL-IKHLAS"></label><label>Lokasi<input id="setLocation" value="Palembang, Sumatera Selatan"></label><label>Suhu<input id="setTemp" value="28°C"></label>
+<div class="setting-grid">
+<label>Imsak<input id="pImsak" value="04:35"></label><label>Subuh<input id="pSubuh" value="04:45"></label><label>Dzuhur<input id="pDzuhur" value="12:10"></label><label>Ashar<input id="pAshar" value="15:25"></label><label>Maghrib<input id="pMaghrib" value="18:15"></label><label>Isya<input id="pIsya" value="19:25"></label>
+</div><button id="saveSettings" class="save">Simpan Pengaturan</button><p class="hint">Pengaturan tersimpan di browser perangkat ini.</p>
+</div></div>
+<script src="script.js"></script>
+</body></html>

@@ -1,0 +1,24 @@
+const defaultPrayers=[{name:"Imsak",time:"04:35"},{name:"Subuh",time:"04:45"},{name:"Dzuhur",time:"12:10"},{name:"Ashar",time:"15:25"},{name:"Maghrib",time:"18:15"},{name:"Isya",time:"19:25"}];
+let prayers=JSON.parse(localStorage.getItem("masjidPrayers"))||defaultPrayers;
+const azkars=[
+{title:"Dzikir Pagi",arabic:"أَسْتَغْفِرُ اللَّهَ وَأَتُوبُ إِلَيْهِ",meaning:"Aku memohon ampun kepada Allah dan bertaubat kepada-Nya."},
+{title:"Dzikir Pagi",arabic:"سُبْحَانَ اللَّهِ وَبِحَمْدِهِ",meaning:"Mahasuci Allah dan segala puji bagi-Nya."},
+{title:"Dzikir Pagi",arabic:"لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ",meaning:"Tiada Tuhan selain Allah Yang Maha Esa, tiada sekutu bagi-Nya."},
+{title:"Dzikir Petang",arabic:"حَسْبِيَ اللَّهُ لَا إِلَهَ إِلَّا هُوَ",meaning:"Cukuplah Allah bagiku, tiada Tuhan selain Dia."},
+{title:"Dzikir Petang",arabic:"اللَّهُمَّ صَلِّ وَسَلِّمْ عَلَى نَبِيِّنَا مُحَمَّدٍ",meaning:"Ya Allah, limpahkanlah shalawat dan salam kepada Nabi Muhammad."}
+];
+let azkarIndex=0;const $=id=>document.getElementById(id);
+const days=["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"],months=["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
+function mins(t){const [h,m]=t.split(":").map(Number);return h*60+m}
+function updateClock(){const now=new Date(),h=String(now.getHours()).padStart(2,"0"),m=String(now.getMinutes()).padStart(2,"0"),s=String(now.getSeconds()).padStart(2,"0");$("clock").innerHTML=`${h}:${m}<span>:${s}</span>`;$("dateText").textContent=`${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;updatePrayerState(now)}
+function updatePrayerState(now){const cur=now.getHours()*60+now.getMinutes()+now.getSeconds()/60;let next=null,nm=Infinity;prayers.forEach(p=>{const x=mins(p.time);if(x>cur&&x<nm){nm=x;next=p}});if(!next){next=prayers[0];nm=mins(next.time)+1440}let target=new Date(now);target.setHours(Math.floor(nm/60)%24,nm%60,0,0);if(nm>=1440)target.setDate(target.getDate()+1);let total=Math.floor(Math.max(0,target-now)/1000);$("nextPrayerName").textContent=next.name.toUpperCase();$("countdown").textContent=`${String(Math.floor(total/3600)).padStart(2,"0")}:${String(Math.floor(total%3600/60)).padStart(2,"0")}:${String(total%60).padStart(2,"0")}`;document.querySelectorAll(".prayer").forEach(e=>e.classList.toggle("active",e.dataset.name===next.name))}
+function renderPrayers(){$("prayerList").innerHTML=prayers.map(p=>`<div class="prayer" data-name="${p.name}"><span class="prayer-name">${p.name}</span><span class="prayer-time">${p.time}</span></div>`).join("");updatePrayerState(new Date())}
+function renderAzkar(){const a=azkars[azkarIndex];$("azkarTitle").textContent=a.title;$("azkarArabic").textContent=a.arabic;$("azkarMeaning").textContent=a.meaning;$("azkarIndex").textContent=azkarIndex+1;$("azkarTotal").textContent=azkars.length}
+$("prevAzkar").onclick=()=>{azkarIndex=(azkarIndex-1+azkars.length)%azkars.length;renderAzkar()};$("nextAzkar").onclick=()=>{azkarIndex=(azkarIndex+1)%azkars.length;renderAzkar()};
+function loadSettings(){const s=JSON.parse(localStorage.getItem("masjidSettings")||"{}");if(s.name)$("mosqueName").textContent=s.name;if(s.location){$("mosqueLocation").textContent=s.location;$("locationShort").textContent=s.location.split(",")[0]}if(s.temp)$("temperature").textContent=s.temp}
+function openSettings(){const s=JSON.parse(localStorage.getItem("masjidSettings")||"{}");$("setName").value=s.name||$("mosqueName").textContent;$("setLocation").value=s.location||$("mosqueLocation").textContent;$("setTemp").value=s.temp||$("temperature").textContent;prayers.forEach(p=>{$("p"+p.name).value=p.time});$("settingsModal").classList.remove("hidden")}
+function closeSettings(){$("settingsModal").classList.add("hidden")}
+$("settingsBtn").onclick=openSettings;$("closeSettings").onclick=closeSettings;document.querySelector(".modal-backdrop").onclick=closeSettings;
+$("saveSettings").onclick=()=>{const s={name:$("setName").value.trim()||"MASJID AL-IKHLAS",location:$("setLocation").value.trim()||"Palembang, Sumatera Selatan",temp:$("setTemp").value.trim()||"28°C"};localStorage.setItem("masjidSettings",JSON.stringify(s));$("mosqueName").textContent=s.name;$("mosqueLocation").textContent=s.location;$("locationShort").textContent=s.location.split(",")[0];$("temperature").textContent=s.temp;prayers=prayers.map(p=>({name:p.name,time:$("p"+p.name).value||p.time}));localStorage.setItem("masjidPrayers",JSON.stringify(prayers));renderPrayers();closeSettings()};
+$("fullscreenBtn").onclick=async()=>{try{if(!document.fullscreenElement)await document.documentElement.requestFullscreen();else await document.exitFullscreen()}catch(e){}};
+loadSettings();renderPrayers();renderAzkar();updateClock();setInterval(updateClock,1000);
